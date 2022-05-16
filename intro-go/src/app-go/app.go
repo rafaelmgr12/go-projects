@@ -2,14 +2,13 @@ package main
 
 import (
 	"fmt"
+	"net/http"
 	"os"
 )
 
 func main() {
 
 	showInfo()
-	showMenu()
-	option := readOption()
 
 	// if option == 1 {
 	// 	fmt.Println("Start Monitoring")
@@ -21,17 +20,25 @@ func main() {
 	// 	fmt.Println("Invalid Option")
 	// }
 	// it is possible to use switch case in Go
-	switch option {
-	case 1:
-		fmt.Println("Monitoring...")
-	case 2:
-		fmt.Println("Show Logs...")
-	case 0:
-		fmt.Println("Exiting...")
-		os.Exit(0)
-	default:
-		fmt.Println("Invalid Option")
-		os.Exit(-1)
+	for {
+		showMenu()
+
+		option := readOption()
+
+		switch option {
+		case 1:
+			starMonitoring()
+		case 2:
+			fmt.Println("Show Logs...")
+		case 0:
+			fmt.Println("Exiting...")
+			os.Exit(0)
+			break
+		default:
+			fmt.Println("Invalid Option")
+			os.Exit(-1)
+			break
+		}
 	}
 
 }
@@ -60,4 +67,18 @@ func readOption() int {
 
 	fmt.Println("You selected option ", option)
 	return option
+}
+
+func starMonitoring() {
+	fmt.Println("Start Monitoring...")
+	site := "https://random-status-code.herokuapp.com/"
+	resp, _ := http.Get(site)
+
+	if resp.StatusCode == 200 {
+		fmt.Println("Site is up!")
+	} else {
+		fmt.Println("Site is down! Status code: ", resp.StatusCode)
+
+	}
+
 }
