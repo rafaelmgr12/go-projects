@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"time"
 )
 
 func main() {
@@ -70,8 +71,26 @@ func readOption() int {
 }
 
 func starMonitoring() {
+	monitoringTimes := 5
+	delay := 10 * time.Minute // 10 minutes
 	fmt.Println("Start Monitoring...")
-	site := "https://random-status-code.herokuapp.com/"
+	sites := []string{"https://random-status-code.herokuapp.com/", "https://www.alura.com.br/", "https://www.caelum.com.br/"}
+
+	// for i := 0; i < len(sites); i++ {
+	// 	fmt.Println("Sites: ", sites[i])
+
+	// }
+	for i := 0; i < monitoringTimes; i++ {
+		for i, site := range sites {
+			fmt.Println("Position in a slice is ", i, ":", site)
+			testSite(site)
+		}
+		time.Sleep(delay)
+	}
+
+}
+
+func testSite(site string) {
 	resp, _ := http.Get(site)
 
 	if resp.StatusCode == 200 {
