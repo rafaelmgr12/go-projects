@@ -1,9 +1,12 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"io"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 )
 
@@ -91,7 +94,12 @@ func starMonitoring() {
 }
 
 func testSite(site string) {
-	resp, _ := http.Get(site)
+	resp, err := http.Get(site)
+
+	if err != nil {
+		fmt.Println("Error: ", err)
+		os.Exit(-1)
+	}
 
 	if resp.StatusCode == 200 {
 		fmt.Println("Site is up!")
@@ -100,4 +108,31 @@ func testSite(site string) {
 
 	}
 
+}
+
+func readFromFiles() []string {
+	var sites []string
+
+	file, err := os.Open("sites.txt")
+	//file, err := ioutil.ReadFile("sites.txt")
+	if err != nil {
+		fmt.Println("Error: ", err)
+		os.Exit(-1)
+	}
+	reader := bufio.NewReader(file)
+
+	for {
+		line, err := reader.ReadString('\n')
+		line = strings.TrimSpace(line)
+
+		sites = append(sites, string(line))
+
+		if err == io.EOF {
+			break
+		}
+
+		fmt.Println("Line: ", line)
+	}
+
+	return sites
 }
