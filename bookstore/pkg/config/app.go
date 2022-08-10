@@ -1,23 +1,24 @@
 package config
 
 import (
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/mysql"
+	"log"
+
+	"github.com/rafaelmgr12/bookstore/pkg/models"
+
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
 var (
-	db *gorm.DB
+	DB  *gorm.DB
+	err error
 )
 
-func Connect() {
-	d, err := gorm.Open("mysql", "rafael:secret@/bookstore?charset=utf8&parseTime=True&loc=Local")
-
+func DatabaseConnection() {
+	connectionString := "host=database port=3306 user=rafael password=secret dbname=bookstore sslmode=disable"
+	DB, err = gorm.Open(mysql.Open(connectionString), &gorm.Config{})
 	if err != nil {
-		panic(err)
+		log.Println(err)
 	}
-	db = d
-}
-
-func GetDB() *gorm.DB {
-	return db
+	DB.AutoMigrate(&models.Book{})
 }

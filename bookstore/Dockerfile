@@ -12,6 +12,6 @@ FROM alpine
 RUN apk add --no-cache ca-certificates && update-ca-certificates
 COPY --from=builder /go/src/github.com/rafaelmgr12/bookstore/build/bookstore /usr/bin/bookstore
 
-EXPOSE 9010 9010
+EXPOSE 9010
 
 ENTRYPOINT ["/usr/bin/bookstore"]
